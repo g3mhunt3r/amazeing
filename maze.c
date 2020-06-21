@@ -16,39 +16,36 @@ int main ()
 	{
 		c = getch();
 		if(c==0x1b)
-		{
-			if(getch()==0x5b)
+		{	
+			getch();
+			switch(getch())
 			{
-				switch(getch())
-				{
-					case 0x41:
-						attron(COLOR_PAIR(1));
-						printw("↑");
-						attroff(COLOR_PAIR(1));
-						break;
-					case 0x42:
-						attron(COLOR_PAIR(2));
-						printw("↓");
-						attroff(COLOR_PAIR(2));
-						break;
-					case 0x43:
-						attron(COLOR_PAIR(3));
-						printw("→");
-						attroff(COLOR_PAIR(3));
-						break;
-					case 0x44:
-						attron(COLOR_PAIR(4));
-						printw("←");
-						attroff(COLOR_PAIR(4));
-						break;
-					default:
-						printw(".");
-				}
+				case 0x41:
+					attron(COLOR_PAIR(1));
+					mvprintw(10,10,"↑");
+					attroff(COLOR_PAIR(1));
+					break;
+				case 0x42:
+					attron(COLOR_PAIR(2));
+					mvprintw(10,10,"↓");
+					attroff(COLOR_PAIR(2));
+					break;
+				case 0x43:
+					attron(COLOR_PAIR(3));
+					mvprintw(10,10,"→");
+					attroff(COLOR_PAIR(3));
+					break;
+				case 0x44:
+					attron(COLOR_PAIR(4));
+					mvprintw(10,10,"←");
+					attroff(COLOR_PAIR(4));
+					break;
+				default:
+					mvprintw(10,10,".");
 			}
 		}
 		else
-			printw("%c",c);
-		printw("\n");
+			mvprintw(10,10,"%c",c);
 		refresh();
 	}
 	endwin();
