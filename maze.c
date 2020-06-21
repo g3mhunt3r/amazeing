@@ -1,8 +1,31 @@
 #include<curses.h>
 #include<locale.h>
-int main ()
+void readmaze()
 {
-	int i,x,row,col;
+	int x,y;
+	FILE *mazep;
+	mazep=fopen("maze.txt","r");
+	fscanf(mazep,"%d %d\n",&x,&y);
+	char maz[x][y];
+	for(int i=0;i<x;i++)
+	{
+		fgets(maz[i],y,mazep);
+		fgetc(mazep);
+		printf("%s\n",maz[i]);
+	}
+	/*or(int i=0;i<x;i++)
+	{
+		for(int j=0;j<y;j++)
+		{
+			printf("%c",maz[i][j]);
+		}
+		printf("\n%d\n",i);
+	}*/
+}
+int main()
+{
+	readmaze();
+	/*int i,x,row,col;
 	char c;
 	setlocale(LC_ALL, "");
 	initscr();
@@ -13,7 +36,6 @@ int main ()
         init_pair(4, COLOR_CYAN, COLOR_BLACK);
 	noecho();
 	char arr[4][4]={"↑","↓","→","←"};
-	
 	while(c!='q')
 	{
 		c = getch();
@@ -31,6 +53,6 @@ int main ()
 			mvprintw(row/2,col/2,"%c",c);
 		refresh();
 	}
-	endwin();
+	endwin();*/
 	return 0;
 }
