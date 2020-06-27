@@ -1,31 +1,46 @@
 #include<curses.h>
 #include<locale.h>
+#include<stdlib.h>
+int mx,my;
+char **maz;
 void readmaze()
 {
-	int x,y;
 	FILE *mazep;
 	mazep=fopen("maze.txt","r");
-	fscanf(mazep,"%d %d\n",&x,&y);
-	char maz[x][y];
-	for(int i=0;i<x;i++)
+	fscanf(mazep,"%d %d\n",&mx,&my);
+	maz=malloc(mx*sizeof(char*));
+	for(int i=0;i<mx;i++)
+        maz[i]=malloc(my*sizeof(char));
+	for(int i=0;i<mx;i++)
 	{
-		fgets(maz[i],y,mazep);
+		fgets(maz[i],my,mazep);
 		fgetc(mazep);
-		printf("%s\n",maz[i]);
 	}
-	/*or(int i=0;i<x;i++)
+}
+void printmaze()
+{
+	int flag=1;
+	for(int i=0;i<mx;i++)
 	{
-		for(int j=0;j<y;j++)
+		for(int j=0;j<my;j++)
 		{
-			printf("%c",maz[i][j]);
+			if(maz[i][j]=='X')
+			{
+				attron(COLOR_PAIR(3));
+				printw(flag?"█":"▒");
+				attroff(COLOR_PAIR(3));
+			}
+			else
+				printw("%c",maz[i][j]);
+			flag=!flag;
 		}
-		printf("\n%d\n",i);
-	}*/
+		printw("\n");
+	}
 }
 int main()
 {
 	readmaze();
-	/*int i,x,row,col;
+	int i,x,row,col;
 	char c;
 	setlocale(LC_ALL, "");
 	initscr();
@@ -36,6 +51,7 @@ int main()
         init_pair(4, COLOR_CYAN, COLOR_BLACK);
 	noecho();
 	char arr[4][4]={"↑","↓","→","←"};
+	printmaze();
 	while(c!='q')
 	{
 		c = getch();
@@ -53,6 +69,6 @@ int main()
 			mvprintw(row/2,col/2,"%c",c);
 		refresh();
 	}
-	endwin();*/
+	endwin();
 	return 0;
 }
