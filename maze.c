@@ -32,7 +32,12 @@ void printmaze()
 				attroff(COLOR_PAIR(3));
 			}
 			else
-				printw("%c",maz[i][j]);
+			{
+				if(maz[i][j]=='A')
+					printw("⌘");
+				else
+					printw("%c",maz[i][j]);
+			}
 			flag=!flag;
 		}
 		printw("\n");
