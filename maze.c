@@ -1,6 +1,7 @@
 #include<curses.h>
 #include<locale.h>
 #include<stdlib.h>
+#define player "⍾"
 int mx,my;
 char **maz;
 void readmaze()
@@ -27,14 +28,17 @@ void printmaze()
 		{
 			if(maz[i][j]=='X')
 			{
-				attron(COLOR_PAIR(3));
+				attron(COLOR_PAIR(4));
 				printw(flag?"█":"▒");
-				attroff(COLOR_PAIR(3));
+				attroff(COLOR_PAIR(4));
 			}
 			else
 			{
 				if(maz[i][j]=='A')
-					printw("⌘");
+				{	attron(COLOR_PAIR(2));
+					printw(player);
+					attroff(COLOR_PAIR(2));
+				}
 				else
 					printw("%c",maz[i][j]);
 			}
@@ -137,6 +141,8 @@ int main()
         init_pair(2, COLOR_YELLOW, COLOR_BLACK);
         init_pair(3, COLOR_GREEN, COLOR_BLACK);
         init_pair(4, COLOR_CYAN, COLOR_BLACK);
+        init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+
 	noecho();
 	char arr[4][4]={"↑","↓","→","←"};
 	printmaze();
