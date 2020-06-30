@@ -141,9 +141,7 @@ int main()
         init_pair(2, COLOR_YELLOW, COLOR_BLACK);
         init_pair(3, COLOR_GREEN, COLOR_BLACK);
         init_pair(4, COLOR_CYAN, COLOR_BLACK);
-        init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
-
-	noecho();
+    noecho();
 	char arr[4][4]={"↑","↓","→","←"};
 	printmaze();
 	while(c!='q')
