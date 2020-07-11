@@ -2,23 +2,37 @@
 #include<locale.h>
 #include<stdlib.h>
 #define player "⍾"	// replacing player with ⍾
+#define win "♛"		// replacing win with ♛
 int mx,my;			// number of rows and columns of maze
-char **maz;			// pointer to character array storing maze 
+char **maz;			// pointer to character array storing maze
+int px,py,wx,wy;
 
 /*******
 reads the maze from the file maze.txt into maz
 *******/
 void readmaze()
 {
-	FILE *mazep;						// creating file pointer 
+	FILE *mazep;						// creating file pointer
 	mazep=fopen("maze.txt","r");		// opning file in read mode
 	fscanf(mazep,"%d %d\n",&mx,&my);	// read no. of rows and columns from file
 	maz=malloc(mx*sizeof(char*));		// allocating space for row pointers
-	for(int i=0;i<mx;i++)				// for each row: 
-        maz[i]=malloc(my*sizeof(char));	// allocate space for row		
 	for(int i=0;i<mx;i++)				// for each row:
-	{
+    {
+		maz[i]=malloc(my*sizeof(char));	// allocate space for row
 		fgets(maz[i],my,mazep);			// reads row into maz[i]
+		for(int j=0;j<my;j++)
+		{
+			if(maz[i][j]=='A')
+			{
+				px=i;
+				py=j;
+			}
+			if(maz[i][j]=='W')
+			{
+				wx=i;
+				wy=j;
+			}
+		}
 		fgetc(mazep);					// reads newline character
 	}
 }
@@ -48,6 +62,12 @@ void printmaze()
 					printw(player);
 					attroff(COLOR_PAIR(2));
 				}
+				else if(maz[i][j]=='W')
+				{
+					attron(COLOR_PAIR(3));
+					printw(win);
+					attroff(COLOR_PAIR(3));
+				}
 				else						// if any other character:
 					printw("%c",maz[i][j]);	// print character
 			}
@@ -58,80 +78,45 @@ void printmaze()
 }
 void up()
 {
-	for(int i=1;i<mx;i++)
-	{
-		for(int j=0;j<my;j++)
-		{
-			if(maz[i][j]=='A')
-			{
-				if(maz[i-1][j]!='X')
-				{
-					maz[i-1][j]='A';
-					maz[i][j]=' ';
-					printmaze();
-					return;
-				}
-			}
-		}
-	}
+	if(px==0||maz[px-1][py]=='X')
+		return;
+	maz[px-1][py]='A';
+	maz[px][py]=' ';
+	printmaze();
+	px--;
 }
 
 void down()
 {
-	for(int i=0;i<mx-1;i++)
-	{
-		for(int j=0;j<my;j++)
-		{
-			if(maz[i][j]=='A')
-			{
-				if(maz[i+1][j]!='X')
-				{
-					maz[i+1][j]='A';
-					maz[i][j]=' ';
-					printmaze();
-					return;
-				}
-			}
-		}
-	}
+	if(px>mx-2||maz[px+1][py]=='X')
+		return;
+	maz[px+1][py]='A';
+	maz[px][py]=' ';
+	printmaze();
+	px++;
 }
 void right()
 {
-	for(int i=0;i<mx;i++)
-	{
-		for(int j=0;j<my-1;j++)
-		{
-			if(maz[i][j]=='A')
-			{
-				if(maz[i][j+1]!='X')
-				{
-					maz[i][j+1]='A';
-					maz[i][j]=' ';
-					printmaze();
-					return;
-				}
-			}
-		}
-	}
+	if(py>my-2||maz[px][py+1]=='X')
+		return;
+	maz[px][py+1]='A';
+	maz[px][py]=' ';
+	printmaze();
+	py++;
 }
 void left()
 {
-	for(int i=0;i<mx;i++)
-	{
-		for(int j=1;j<my;j++)
-		{
-			if(maz[i][j]=='A')
-			{
-				if(maz[i][j-1]!='X')
-				{
-					maz[i][j-1]='A';
-					maz[i][j]=' ';
-					printmaze();
-					return;
-				}
-			}
-		}
-	}
+	if(py==0||maz[px][py-1]=='X')
+		return;
+	maz[px][py-1]='A';
+	maz[px][py]=' ';
+	printmaze();
+	py--;
+}
+
+int checkwin()
+{
+	return px==wx&&py==wy;
 }
 
 int main()
@@ -146,7 +131,7 @@ int main()
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 	init_pair(3, COLOR_GREEN, COLOR_BLACK);
-	init_pair(4, COLOR_CYAN, COLOR_BLACK); 
+	init_pair(4, COLOR_CYAN, COLOR_BLACK);
 	noecho();										// disable echo on input
 	char arr[4][4]={"↑","↓","→","←"};				// array of directional characters
 	printmaze();
@@ -162,6 +147,12 @@ int main()
 			mvprintw(row/2,col/2,arr[x]);			// print corresponding arrow at centre
 			attroff(COLOR_PAIR(x+1));
 			(*move[x])();							// call corresponding move function
+			if(checkwin())
+			{
+				printw("YOU WIN");
+				getch();
+				break;
+			}
 		}
 		else
 			mvprintw(row/2,col/2,"%c",c);			// print any other character entered
